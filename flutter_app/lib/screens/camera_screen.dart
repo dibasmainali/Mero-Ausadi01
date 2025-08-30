@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:camera/camera.dart';
 import '../providers/camera_provider.dart';
 import '../providers/medicine_provider.dart';
 import '../providers/language_provider.dart';
 import '../utils/constants.dart';
 import 'result_screen.dart';
+import 'search_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -41,7 +41,8 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Widget _buildBody(CameraProvider cameraProvider, LanguageProvider languageProvider) {
+  Widget _buildBody(
+      CameraProvider cameraProvider, LanguageProvider languageProvider) {
     if (cameraProvider.error != null) {
       return _buildErrorView(cameraProvider, languageProvider);
     }
@@ -57,7 +58,8 @@ class _CameraScreenState extends State<CameraScreen> {
     return _buildCameraView(cameraProvider, languageProvider);
   }
 
-  Widget _buildErrorView(CameraProvider cameraProvider, LanguageProvider languageProvider) {
+  Widget _buildErrorView(
+      CameraProvider cameraProvider, LanguageProvider languageProvider) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.paddingLarge),
@@ -99,144 +101,68 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Widget _buildCameraView(CameraProvider cameraProvider, LanguageProvider languageProvider) {
-    if (cameraProvider.cameraController == null) {
-      return const Center(child: Text('Camera not available'));
-    }
-
-    return Stack(
-      children: [
-        // Camera preview
-        CameraPreview(cameraProvider.cameraController!),
-        
-        // Camera overlay
-        _buildCameraOverlay(cameraProvider, languageProvider),
-        
-        // Camera controls
-        _buildCameraControls(cameraProvider, languageProvider),
-      ],
-    );
-  }
-
-  Widget _buildCameraOverlay(CameraProvider cameraProvider, LanguageProvider languageProvider) {
+  Widget _buildCameraView(
+      CameraProvider cameraProvider, LanguageProvider languageProvider) {
+    // Camera functionality temporarily disabled for web
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.white,
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
-      ),
-      margin: const EdgeInsets.all(AppSizes.paddingLarge),
-      child: Column(
-        children: [
-          // Top section
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.all(AppSizes.paddingMedium),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.5),
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(AppSizes.radiusSmall),
-              ),
-              child: Center(
-                child: Text(
-                  'Position medicine label here',
-                  style: AppTextStyles.body1.copyWith(
-                    color: Colors.white,
-                    backgroundColor: Colors.black54,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCameraControls(CameraProvider cameraProvider, LanguageProvider languageProvider) {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        padding: const EdgeInsets.all(AppSizes.paddingLarge),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.transparent,
-              Colors.black.withOpacity(0.7),
-            ],
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      width: double.infinity,
+      height: double.infinity,
+      color: Colors.black87,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Flash toggle
-            if (cameraProvider.isFlashAvailable)
-              IconButton(
-                onPressed: () => cameraProvider.toggleFlash(),
-                icon: Icon(
-                  cameraProvider.currentFlashMode == FlashMode.off
-                      ? Icons.flash_off
-                      : cameraProvider.currentFlashMode == FlashMode.auto
-                          ? Icons.flash_auto
-                          : Icons.flash_on,
-                  color: Colors.white,
-                  size: AppSizes.iconSizeLarge,
-                ),
-              ),
-            
-            // Capture button
-            GestureDetector(
-              onTap: cameraProvider.isCapturing ? null : _captureImage,
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 4,
-                  ),
-                  color: cameraProvider.isCapturing
-                      ? Colors.grey
-                      : Colors.white.withOpacity(0.3),
-                ),
-                child: cameraProvider.isCapturing
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
-                    : const Icon(
-                        Icons.camera,
-                        color: Colors.white,
-                        size: 40,
-                      ),
-              ),
+            const Icon(
+              Icons.camera_alt,
+              size: 80,
+              color: Colors.white54,
             ),
-            
-            // Switch camera
-            if (cameraProvider.cameras.length > 1)
-              IconButton(
-                onPressed: () => cameraProvider.switchCamera(),
-                icon: const Icon(
-                  Icons.flip_camera_ios,
-                  color: Colors.white,
-                  size: AppSizes.iconSizeLarge,
-                ),
+            const SizedBox(height: AppSizes.paddingMedium),
+            Text(
+              'Camera functionality is not available in web version',
+              style: AppTextStyles.body1.copyWith(
+                color: Colors.white70,
               ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSizes.paddingMedium),
+            Text(
+              'Please use the search functionality instead',
+              style: AppTextStyles.body2.copyWith(
+                color: Colors.white54,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSizes.paddingLarge),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SearchScreen()),
+                );
+              },
+              child: Text(languageProvider.getString('search_medicine')),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildImagePreviewView(CameraProvider cameraProvider, LanguageProvider languageProvider) {
+  Widget _buildCameraOverlay(
+      CameraProvider cameraProvider, LanguageProvider languageProvider) {
+    // Camera overlay disabled
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildCameraControls(
+      CameraProvider cameraProvider, LanguageProvider languageProvider) {
+    // Camera controls disabled
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildImagePreviewView(
+      CameraProvider cameraProvider, LanguageProvider languageProvider) {
     return Column(
       children: [
         // Image preview
@@ -257,7 +183,7 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
           ),
         ),
-        
+
         // Action buttons
         Container(
           padding: const EdgeInsets.all(AppSizes.paddingLarge),
@@ -271,13 +197,14 @@ class _CameraScreenState extends State<CameraScreen> {
                   icon: const Icon(Icons.refresh),
                   label: Text(languageProvider.getString('retake_photo')),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: AppSizes.paddingMedium),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: AppSizes.paddingMedium),
                   ),
                 ),
               ),
-              
+
               const SizedBox(width: AppSizes.paddingMedium),
-              
+
               // Process button
               Expanded(
                 child: ElevatedButton.icon(
@@ -295,7 +222,8 @@ class _CameraScreenState extends State<CameraScreen> {
                         : languageProvider.getString('search'),
                   ),
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: AppSizes.paddingMedium),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: AppSizes.paddingMedium),
                   ),
                 ),
               ),
@@ -313,39 +241,33 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> _processImage() async {
     final cameraProvider = Provider.of<CameraProvider>(context, listen: false);
-    final medicineProvider = Provider.of<MedicineProvider>(context, listen: false);
-    final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    final medicineProvider =
+        Provider.of<MedicineProvider>(context, listen: false);
+    final languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
 
     try {
       // Process image with OCR
-      final ocrResult = await cameraProvider.processImageWithOCR();
-      
-      if (ocrResult != null) {
-        // Search medicines using OCR text
-        await medicineProvider.searchByOCRText(ocrResult.extractedText);
-        
-        // Navigate to results screen
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ResultScreen(
-                ocrResult: ocrResult,
-                searchResults: medicineProvider.searchResults,
-              ),
-            ),
-          );
-        }
-      } else {
-        // Show error if OCR failed
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to process image. Please try again.'),
-              backgroundColor: AppColors.error,
-            ),
-          );
-        }
+      await cameraProvider.processImageWithOCR();
+
+      // Since OCR is disabled, show a message to use search instead
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'OCR functionality is not available in web version. Please use manual search instead.'),
+            backgroundColor: AppColors.warning,
+            duration: Duration(seconds: 3),
+          ),
+        );
+
+        // Navigate to search screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const SearchScreen(),
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {

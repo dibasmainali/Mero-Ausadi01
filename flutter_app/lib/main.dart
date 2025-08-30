@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import 'providers/app_provider.dart';
 import 'providers/medicine_provider.dart';
@@ -12,10 +11,7 @@ import 'utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Firebase
-  await Firebase.initializeApp();
-  
+
   runApp(const AusadiThahaApp());
 }
 
@@ -36,7 +32,7 @@ class AusadiThahaApp extends StatelessWidget {
           return MaterialApp(
             title: 'Ausadi Thaha',
             debugShowCheckedModeBanner: false,
-            
+
             // Localization
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
@@ -48,12 +44,12 @@ class AusadiThahaApp extends StatelessWidget {
               Locale('ne', 'NP'),
             ],
             locale: languageProvider.currentLocale,
-            
+
             theme: ThemeData(
               primarySwatch: Colors.blue,
               primaryColor: AppColors.primary,
               scaffoldBackgroundColor: AppColors.background,
-              fontFamily: 'Roboto',
+              // fontFamily: 'Roboto', // Removed custom font to fix display issues
               appBarTheme: const AppBarTheme(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
@@ -63,14 +59,24 @@ class AusadiThahaApp extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
+              // Add text theme to ensure proper text rendering
+              textTheme: const TextTheme(
+                displayLarge:
+                    TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                displayMedium:
+                    TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                bodyLarge: TextStyle(fontSize: 16),
+                bodyMedium: TextStyle(fontSize: 14),
+              ),
             ),
-            
+
             home: const HomeScreen(),
           );
         },

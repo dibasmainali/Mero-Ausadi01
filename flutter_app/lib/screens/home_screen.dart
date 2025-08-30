@@ -23,7 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _initializeApp() async {
-    final medicineProvider = Provider.of<MedicineProvider>(context, listen: false);
+    final medicineProvider =
+        Provider.of<MedicineProvider>(context, listen: false);
     await medicineProvider.initialize();
   }
 
@@ -82,6 +83,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSizes.paddingSmall),
+                    // Test text to verify display
+                    const Text(
+                      'Test: ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSizes.paddingSmall),
                     Text(
                       'Identify medicines with ease',
                       style: AppTextStyles.body1.copyWith(
@@ -115,9 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: AppColors.primary,
                           onTap: () => _navigateToCamera(),
                         ),
-                        
+
                         const SizedBox(height: AppSizes.paddingMedium),
-                        
+
                         // Search Medicine Card
                         _buildActionCard(
                           icon: Icons.search,
@@ -126,15 +138,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: AppColors.secondary,
                           onTap: () => _navigateToSearch(),
                         ),
-                        
+
                         const SizedBox(height: AppSizes.paddingLarge),
-                        
+
                         // Stats section
                         if (medicineProvider.medicines.isNotEmpty)
                           _buildStatsSection(medicineProvider),
-                        
+
                         const Spacer(),
-                        
+
                         // Footer
                         _buildFooter(languageProvider),
                       ],
@@ -197,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              Icon(
+              const Icon(
                 Icons.arrow_forward_ios,
                 color: AppColors.textSecondary,
                 size: AppSizes.iconSizeSmall,
@@ -261,15 +273,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFooter(LanguageProvider languageProvider) {
-    return Column(
+    return const Column(
       children: [
-        const Divider(),
-        const SizedBox(height: AppSizes.paddingMedium),
+        Divider(),
+        SizedBox(height: AppSizes.paddingMedium),
         Text(
           'Version ${AppConfig.appVersion}',
           style: AppTextStyles.caption,
         ),
-        const SizedBox(height: AppSizes.paddingSmall),
+        SizedBox(height: AppSizes.paddingSmall),
         Text(
           'Made with ❤️ for Nepal',
           style: AppTextStyles.caption,

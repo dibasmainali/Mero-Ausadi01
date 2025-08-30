@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/constants.dart';
@@ -18,7 +17,7 @@ class LanguageProvider with ChangeNotifier {
   Future<void> _loadSavedLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     final String? languageCode = prefs.getString(_languageKey);
-    
+
     if (languageCode != null) {
       _currentLocale = Locale(languageCode);
       notifyListeners();
@@ -27,15 +26,16 @@ class LanguageProvider with ChangeNotifier {
 
   Future<void> setLanguage(String languageCode) async {
     _currentLocale = Locale(languageCode);
-    
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_languageKey, languageCode);
-    
+
     notifyListeners();
   }
 
   String getString(String key) {
-    final Map<String, String> strings = isEnglish ? AppStrings.en : AppStrings.ne;
+    final Map<String, String> strings =
+        isEnglish ? AppStrings.en : AppStrings.ne;
     return strings[key] ?? key;
   }
 }

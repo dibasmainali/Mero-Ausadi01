@@ -1,23 +1,23 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
-import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+// import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../services/ocr_service.dart';
+// import '../services/ocr_service.dart';
 import '../models/medicine.dart';
 
 class CameraProvider with ChangeNotifier {
-  CameraController? _cameraController;
-  List<CameraDescription> _cameras = [];
-  int _selectedCameraIndex = 0;
-  bool _isInitialized = false;
+  // CameraController? _cameraController;
+  // List<CameraDescription> _cameras = [];
+  final int _selectedCameraIndex = 0;
+  final bool _isInitialized = false;
   bool _isCapturing = false;
   File? _capturedImage;
   OCRResult? _ocrResult;
   String? _error;
 
   // Getters
-  CameraController? get cameraController => _cameraController;
-  List<CameraDescription> get cameras => _cameras;
+  // CameraController? get cameraController => _cameraController;
+  // List<CameraDescription> get cameras => _cameras;
   int get selectedCameraIndex => _selectedCameraIndex;
   bool get isInitialized => _isInitialized;
   bool get isCapturing => _isCapturing;
@@ -29,7 +29,7 @@ class CameraProvider with ChangeNotifier {
   Future<bool> initializeCamera() async {
     try {
       _setError(null);
-      
+
       // Request camera permission
       final status = await Permission.camera.request();
       if (status != PermissionStatus.granted) {
@@ -37,93 +37,98 @@ class CameraProvider with ChangeNotifier {
         return false;
       }
 
-      // Get available cameras
-      _cameras = await availableCameras();
-      if (_cameras.isEmpty) {
-        _setError('No cameras available');
-        return false;
-      }
+      // Camera functionality temporarily disabled for web
+      _setError('Camera functionality is not available in web version');
+      return false;
 
-      // Initialize camera controller
-      await _initializeCameraController();
-      
-      _isInitialized = true;
-      notifyListeners();
-      return true;
+      // // Get available cameras
+      // _cameras = await availableCameras();
+      // if (_cameras.isEmpty) {
+      //   _setError('No cameras available');
+      //   return false;
+      // }
+
+      // // Initialize camera controller
+      // await _initializeCameraController();
+
+      // _isInitialized = true;
+      // notifyListeners();
+      // return true;
     } catch (e) {
       _setError('Failed to initialize camera: $e');
       return false;
     }
   }
 
-  Future<void> _initializeCameraController() async {
-    if (_cameraController != null) {
-      await _cameraController!.dispose();
-    }
+  // Future<void> _initializeCameraController() async {
+  //   if (_cameraController != null) {
+  //     await _cameraController!.dispose();
+  //   }
 
-    _cameraController = CameraController(
-      _cameras[_selectedCameraIndex],
-      ResolutionPreset.high,
-      enableAudio: false,
-    );
+  //   _cameraController = CameraController(
+  //     _cameras[_selectedCameraIndex],
+  //     ResolutionPreset.high,
+  //     enableAudio: false,
+  //   );
 
-    await _cameraController!.initialize();
-    notifyListeners();
-  }
+  //   await _cameraController!.initialize();
+  //   notifyListeners();
+  // }
 
   // Switch camera
   Future<void> switchCamera() async {
-    if (_cameras.length < 2) return;
+    // Camera functionality temporarily disabled
+    return;
+    // if (_cameras.length < 2) return;
 
-    _selectedCameraIndex = (_selectedCameraIndex + 1) % _cameras.length;
-    await _initializeCameraController();
+    // _selectedCameraIndex = (_selectedCameraIndex + 1) % _cameras.length;
+    // await _initializeCameraController();
   }
 
   // Capture image
   Future<File?> captureImage() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized) {
-      _setError('Camera not initialized');
-      return null;
-    }
+    // Camera functionality temporarily disabled
+    _setError('Camera functionality is not available in web version');
+    return null;
 
-    try {
-      _setCapturing(true);
-      _setError(null);
+    // if (_cameraController == null || !_cameraController!.value.isInitialized) {
+    //   _setError('Camera not initialized');
+    //   return null;
+    // }
 
-      final XFile image = await _cameraController!.takePicture();
-      _capturedImage = File(image.path);
-      
-      notifyListeners();
-      return _capturedImage;
-    } catch (e) {
-      _setError('Failed to capture image: $e');
-      return null;
-    } finally {
-      _setCapturing(false);
-    }
+    // try {
+    //   _setCapturing(true);
+    //   _setError(null);
+
+    //   final XFile image = await _cameraController!.takePicture();
+    //   _capturedImage = File(image.path);
+
+    //   notifyListeners();
+    //   return _capturedImage;
+    // } catch (e) {
+    //   _setError('Failed to capture image: $e');
+    //   return null;
+    // } finally {
+    //   _setCapturing(false);
+    // }
   }
 
   // Process image with OCR
-  Future<OCRResult?> processImageWithOCR() async {
+  Future<void> processImageWithOCR() async {
     if (_capturedImage == null) {
       _setError('No image captured');
-      return null;
+      return;
     }
 
     try {
-      _setCapturing(true);
       _setError(null);
-
-      final OCRService ocrService = OCRService();
-      _ocrResult = await ocrService.processImage(_capturedImage!);
-      
-      notifyListeners();
-      return _ocrResult;
+      // OCR functionality temporarily disabled
+      _setError('OCR functionality is not available in web version');
+      // final ocrService = OCRService();
+      // _ocrResult = await ocrService.processImage(_capturedImage!);
+      // notifyListeners();
     } catch (e) {
       _setError('OCR processing failed: $e');
-      return null;
-    } finally {
-      _setCapturing(false);
     }
   }
 
@@ -145,66 +150,76 @@ class CameraProvider with ChangeNotifier {
 
   // Get camera preview size
   Size? getCameraPreviewSize() {
-    if (_cameraController?.value.previewSize != null) {
-      return Size(
-        _cameraController!.value.previewSize!.width,
-        _cameraController!.value.previewSize!.height,
-      );
-    }
+    // Camera functionality temporarily disabled
     return null;
+    // if (_cameraController?.value.previewSize != null) {
+    //   return Size(
+    //     _cameraController!.value.previewSize!.width,
+    //     _cameraController!.value.previewSize!.height,
+    //   );
+    // }
+    // return null;
   }
 
   // Check if flash is available
   bool get isFlashAvailable {
-    return _cameraController?.value.hasFlash ?? false;
+    // Camera functionality temporarily disabled
+    return false;
+    // return _cameraController?.value.flashMode != FlashMode.off;
   }
 
   // Toggle flash
   Future<void> toggleFlash() async {
-    if (_cameraController == null || !isFlashAvailable) return;
+    // Camera functionality temporarily disabled
+    return;
+    // if (_cameraController == null || !isFlashAvailable) return;
 
-    try {
-      final FlashMode currentMode = _cameraController!.value.flashMode;
-      FlashMode newMode;
+    // try {
+    //   final FlashMode currentMode = _cameraController!.value.flashMode;
+    //   FlashMode newMode;
 
-      switch (currentMode) {
-        case FlashMode.off:
-          newMode = FlashMode.auto;
-          break;
-        case FlashMode.auto:
-          newMode = FlashMode.always;
-          break;
-        case FlashMode.always:
-          newMode = FlashMode.off;
-          break;
-        default:
-          newMode = FlashMode.off;
-      }
+    //   switch (currentMode) {
+    //     case FlashMode.off:
+    //       newMode = FlashMode.auto;
+    //       break;
+    //     case FlashMode.auto:
+    //       newMode = FlashMode.always;
+    //       break;
+    //     case FlashMode.always:
+    //       newMode = FlashMode.off;
+    //       break;
+    //     default:
+    //       newMode = FlashMode.off;
+    //   }
 
-      await _cameraController!.setFlashMode(newMode);
-      notifyListeners();
-    } catch (e) {
-      _setError('Failed to toggle flash: $e');
-    }
+    //   await _cameraController!.setFlashMode(newMode);
+    //   notifyListeners();
+    // } catch (e) {
+    //   _setError('Failed to toggle flash: $e');
+    // }
   }
 
   // Get current flash mode
-  FlashMode get currentFlashMode {
-    return _cameraController?.value.flashMode ?? FlashMode.off;
-  }
+  // FlashMode get currentFlashMode {
+  //   return _cameraController?.value.flashMode ?? FlashMode.off;
+  // }
 
   // Check if camera is ready
   bool get isCameraReady {
-    return _cameraController?.value.isInitialized ?? false;
+    // Camera functionality temporarily disabled
+    return false;
+    // return _cameraController?.value.isInitialized ?? false;
   }
 
   // Get camera aspect ratio
   double get cameraAspectRatio {
-    if (_cameraController?.value.previewSize != null) {
-      return _cameraController!.value.previewSize!.width /
-             _cameraController!.value.previewSize!.height;
-    }
+    // Camera functionality temporarily disabled
     return 4 / 3; // Default aspect ratio
+    // if (_cameraController?.value.previewSize != null) {
+    //   return _cameraController!.value.previewSize!.width /
+    //          _cameraController!.value.previewSize!.height;
+    // }
+    // return 4 / 3; // Default aspect ratio
   }
 
   // Private helper methods
@@ -221,7 +236,7 @@ class CameraProvider with ChangeNotifier {
   // Dispose resources
   @override
   void dispose() {
-    _cameraController?.dispose();
+    // _cameraController?.dispose();
     super.dispose();
   }
 }

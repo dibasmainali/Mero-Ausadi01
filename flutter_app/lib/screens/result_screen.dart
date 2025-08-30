@@ -31,7 +31,8 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(BuildContext context, LanguageProvider languageProvider, MedicineProvider medicineProvider) {
+  Widget _buildBody(BuildContext context, LanguageProvider languageProvider,
+      MedicineProvider medicineProvider) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSizes.paddingMedium),
       child: Column(
@@ -39,14 +40,15 @@ class ResultScreen extends StatelessWidget {
         children: [
           // OCR Results Section
           _buildOCRResultsSection(context, languageProvider),
-          
+
           const SizedBox(height: AppSizes.paddingLarge),
-          
+
           // Search Results Section
-          _buildSearchResultsSection(context, languageProvider, medicineProvider),
-          
+          _buildSearchResultsSection(
+              context, languageProvider, medicineProvider),
+
           const SizedBox(height: AppSizes.paddingLarge),
-          
+
           // Action Buttons
           _buildActionButtons(context, languageProvider),
         ],
@@ -54,7 +56,8 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOCRResultsSection(BuildContext context, LanguageProvider languageProvider) {
+  Widget _buildOCRResultsSection(
+      BuildContext context, LanguageProvider languageProvider) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -62,10 +65,10 @@ class ResultScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const Icon(Icons.text_fields, color: AppColors.primary),
-                const SizedBox(width: AppSizes.paddingSmall),
+                Icon(Icons.text_fields, color: AppColors.primary),
+                SizedBox(width: AppSizes.paddingSmall),
                 Text(
                   'Extracted Text',
                   style: AppTextStyles.heading2,
@@ -82,8 +85,8 @@ class ResultScreen extends StatelessWidget {
                 border: Border.all(color: AppColors.divider),
               ),
               child: Text(
-                ocrResult.extractedText.isNotEmpty 
-                    ? ocrResult.extractedText 
+                ocrResult.extractedText.isNotEmpty
+                    ? ocrResult.extractedText
                     : 'No text detected',
                 style: AppTextStyles.body1,
               ),
@@ -108,7 +111,8 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchResultsSection(BuildContext context, LanguageProvider languageProvider, MedicineProvider medicineProvider) {
+  Widget _buildSearchResultsSection(BuildContext context,
+      LanguageProvider languageProvider, MedicineProvider medicineProvider) {
     if (searchResults.isEmpty) {
       return Card(
         elevation: 2,
@@ -128,7 +132,7 @@ class ResultScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSizes.paddingSmall),
-              Text(
+              const Text(
                 'No medicines found matching the extracted text. Try taking a clearer photo or search manually.',
                 style: AppTextStyles.body2,
                 textAlign: TextAlign.center,
@@ -147,14 +151,18 @@ class ResultScreen extends StatelessWidget {
           style: AppTextStyles.heading2,
         ),
         const SizedBox(height: AppSizes.paddingMedium),
-        ...searchResults.map((result) => _buildMedicineCard(context, result, languageProvider, medicineProvider)),
+        ...searchResults.map((result) => _buildMedicineCard(
+            context, result, languageProvider, medicineProvider)),
       ],
     );
   }
 
-  Widget _buildMedicineCard(BuildContext context, MedicineSearchResult result, LanguageProvider languageProvider, MedicineProvider medicineProvider) {
-    final bool isHighConfidence = medicineProvider.isHighConfidenceMatch(result);
-    final String confidenceLevel = medicineProvider.getConfidenceLevel(result.confidenceScore);
+  Widget _buildMedicineCard(BuildContext context, MedicineSearchResult result,
+      LanguageProvider languageProvider, MedicineProvider medicineProvider) {
+    final bool isHighConfidence =
+        medicineProvider.isHighConfidenceMatch(result);
+    final String confidenceLevel =
+        medicineProvider.getConfidenceLevel(result.confidenceScore);
 
     return Card(
       elevation: 2,
@@ -182,7 +190,9 @@ class ResultScreen extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: isHighConfidence ? AppColors.success : AppColors.warning,
+                      color: isHighConfidence
+                          ? AppColors.success
+                          : AppColors.warning,
                       borderRadius: BorderRadius.circular(AppSizes.radiusSmall),
                     ),
                     child: Text(
@@ -195,9 +205,9 @@ class ResultScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: AppSizes.paddingSmall),
-              
+
               // Medicine details
               Text(
                 'Generic: ${result.medicine.genericName}',
@@ -211,9 +221,9 @@ class ResultScreen extends StatelessWidget {
                 'Manufacturer: ${result.medicine.manufacturer}',
                 style: AppTextStyles.body2,
               ),
-              
+
               const SizedBox(height: AppSizes.paddingSmall),
-              
+
               // Confidence score
               Row(
                 children: [
@@ -227,13 +237,15 @@ class ResultScreen extends StatelessWidget {
                       value: result.confidenceScore,
                       backgroundColor: AppColors.divider,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        isHighConfidence ? AppColors.success : AppColors.warning,
+                        isHighConfidence
+                            ? AppColors.success
+                            : AppColors.warning,
                       ),
                     ),
                   ),
                 ],
               ),
-              
+
               if (result.matchedText.isNotEmpty) ...[
                 const SizedBox(height: AppSizes.paddingSmall),
                 Text(
@@ -251,7 +263,8 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, LanguageProvider languageProvider) {
+  Widget _buildActionButtons(
+      BuildContext context, LanguageProvider languageProvider) {
     return Column(
       children: [
         // Try again button
@@ -260,15 +273,16 @@ class ResultScreen extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.camera_alt),
-            label: Text('Scan Another Medicine'),
+            label: const Text('Scan Another Medicine'),
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: AppSizes.paddingMedium),
+              padding:
+                  const EdgeInsets.symmetric(vertical: AppSizes.paddingMedium),
             ),
           ),
         ),
-        
+
         const SizedBox(height: AppSizes.paddingMedium),
-        
+
         // Manual search button
         SizedBox(
           width: double.infinity,
@@ -277,7 +291,8 @@ class ResultScreen extends StatelessWidget {
             icon: const Icon(Icons.search),
             label: Text(languageProvider.getString('manual_search')),
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: AppSizes.paddingMedium),
+              padding:
+                  const EdgeInsets.symmetric(vertical: AppSizes.paddingMedium),
             ),
           ),
         ),
